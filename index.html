@@ -1,0 +1,346 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#35172c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Triathlon 70.3"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><title>Triathlon 70.3</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff0f7;background:#24121f}*{box-sizing:border-box}body{margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}header{padding:25px 18px 16px;background:linear-gradient(145deg,#51213f,#24121f)}h1{font-size:24px;margin:4px 0}h2{font-size:18px}small,.muted{color:#dcb4ca}.wrap{max-width:800px;margin:auto}.pill{background:#5d2948;color:#ffd0e8;padding:5px 9px;border-radius:20px;font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 16px}.stat{background:#3a1b32;border-radius:13px;padding:13px 9px;text-align:center}.stat strong{font-size:21px;display:block}.tabs{display:flex;gap:8px;padding:8px 16px;position:sticky;top:0;background:#24121f;z-index:2}.tabs button{flex:1}button,.btn{border:0;background:#663050;color:white;border-radius:11px;padding:11px 12px;font-weight:650;cursor:pointer}button.active,button.primary{background:#ff8ec7;color:#371127}main{padding:5px 16px 32px}.card{background:#3a1b32;border:1px solid #75435e;border-radius:15px;padding:15px;margin:11px 0}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.sport{font-size:22px}.date{font-size:13px;color:#dcb4ca}.note{white-space:pre-wrap;font-size:14px;color:#f2d9e6;line-height:1.5}.tag{display:inline-block;background:#693653;padding:4px 7px;border-radius:6px;font-size:12px;margin:3px 3px 3px 0}.done{border-color:#ff8ec7}.done .tag{background:#713054}input,select{background:#2b1526;color:white;border:1px solid #98627f;border-radius:10px;padding:10px;font-size:16px;width:100%}label{display:block;margin:10px 0 5px;font-size:13px;color:#e8c1d5}.hidden{display:none}#notice{color:#ffb4d7;font-size:13px;margin-top:7px}.sub{font-size:13px;color:#d9b1c8}.toolbar{display:flex;gap:9px;align-items:end}.toolbar>div{flex:1}a{color:#ffc2e2}hr{border:0;border-top:1px solid #72415d;margin:16px 0}
+ .tabs{overflow-x:auto}.tabs button{min-width:90px;white-space:nowrap} .today-highlight{border-color:#ff8ec7;box-shadow:0 0 0 1px #ff8ec755}.archive-week summary{cursor:pointer}.toolbar button{min-width:40px}
+/* Rosa-Farbwelt: ausschließlich visuelle Anpassung */
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ffb6da;outline-offset:2px}button.active,button.primary{color:#351022} .today-highlight{border-color:#ff8ec7;box-shadow:0 0 0 1px #ff8ec755}
+.garmin-archive{background:#48233c;border-left:3px solid #ff8ec7;border-radius:9px;padding:10px;margin:10px 0}.garmin-metrics{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.garmin-metrics .tag{margin:2px;background:#63324e;font-size:12px}.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat-tile{background:#48233c;border-radius:11px;padding:12px}.stat-tile strong{display:block;font-size:19px;margin-top:5px}.stat-track{height:10px;border-radius:10px;background:#60324d;overflow:hidden}.stat-fill{height:100%;border-radius:10px;background:#ff8ec7}.stat-month-row{display:grid;grid-template-columns:45px 1fr auto;gap:9px;align-items:center;margin:9px 0}.stat-sport{border-left:3px solid #ff8ec7}.stat-muted{font-size:12px;color:#d9b1c8}.stat-positive{color:#baf1d4}.stat-negative{color:#ffd0dc}@media(min-width:550px){.stat-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}</style></head><body><div class="wrap"><header><span class="pill">IRONMAN 70.3 · 2027</span><h1>Dein Trainingsplan 🏊 🚴 🏃</h1><div class="muted" id="range">Plan wird geladen …</div></header><div class="stats"><div class="stat"><strong id="total">–</strong><small>Einheiten</small></div><div class="stat"><strong id="completed">–</strong><small>Erledigt</small></div><div class="stat"><strong id="hours">–</strong><small>Std. geplant</small></div></div><nav class="tabs"><button class="active" data-tab="week">Trainingsplan</button><button data-tab="archive">🗂 Archiv</button><button data-tab="races">🏁 Wettkämpfe</button><button data-tab="garmin">⌚ Garmin</button><button data-tab="progress">Fortschritt</button><button data-tab="statistics">📊 Statistik</button><button data-tab="settings">Daten</button></nav><main><section id="week"><div class="toolbar"><div><label for="weekDate">Woche auswählen</label><input id="weekDate" type="date"></div><button id="prevWeek">←</button><button id="today">Heute</button><button id="nextWeek">→</button></div><h2 id="weekTitle"></h2><div id="sessions"></div></section><section id="archive" class="hidden"><h2>🗂 Vergangene Trainingswochen</h2><p class="sub">Abgeschlossene Kalenderwochen werden automatisch hier angezeigt. Deine Häkchen und Verschiebungen bleiben gespeichert.</p><div id="archiveWeeks"></div></section><section id="races" class="hidden"><h2>🏁 Vorbereitungswettkämpfe</h2><div class="card"><p class="sub">Wettkämpfe werden auf diesem Gerät gespeichert. Die App zeigt dir eine vorsichtige, regelbasierte Trainingsanpassung. Bereits erledigte Einheiten bleiben unverändert.</p><form id="raceForm"><label for="raceName">Name</label><input id="raceName" required maxlength="100" placeholder="z. B. Köln Halbmarathon"><label for="raceDate">Datum</label><input id="raceDate" type="date" required><label for="raceType">Distanz / Sport</label><select id="raceType"><option value="5k">5-km-Lauf</option><option value="10k">10-km-Lauf</option><option value="hm">Halbmarathon</option><option value="marathon">Marathon</option><option value="sprint">Sprinttriathlon</option><option value="olympic">Olympische Distanz</option><option value="703">Ironman 70.3</option><option value="other">Anderer Wettkampf</option></select><label for="racePriority">Priorität</label><select id="racePriority"><option value="C">C – Trainingswettkampf (kaum Tapering)</option><option value="B" selected>B – wichtiger Vorbereitungswettkampf</option><option value="A">A – Hauptwettkampf</option></select><p><button class="primary" type="submit">Wettkampf hinzufügen</button></p></form></div><div id="raceList"></div><div class="card"><b>So wird angepasst</b><p class="sub">Der Trainingsplan zeigt je nach Wettkampftyp 3–8 Wochen vorher spezifische Trainingsschwerpunkte sowie Tapering und Regeneration. Am Wettkampftag entfällt das normale Training. Der ursprüngliche Plan bleibt gespeichert; Änderungen können durch Löschen des Wettkampfs rückgängig gemacht werden. Dies ist keine individuelle medizinische Trainingssteuerung.</p></div></section><section id="garmin" class="hidden"><h2>⌚ Garmin Connect</h2><div class="card"><b>🔄 Automatischer Garmin-Abgleich · V10.3</b><p class="sub">Privater Abruf aus Cloudflare. Dein Leseschlüssel bleibt auf diesem Gerät.</p><label for="garminEndpoint">Cloudflare-Abrufadresse</label><input id="garminEndpoint" type="url" autocomplete="url"><label for="garminReadToken">Privater Leseschlüssel</label><input id="garminReadToken" type="password" autocomplete="off"><p class="sub">Nicht den Garmin-API-Schlüssel verwenden. Der Worker muss diesen Leseschlüssel für den Abruf akzeptieren.</p><p><button class="primary" id="garminSync" type="button">Jetzt synchronisieren</button> <button id="garminForget" type="button">Schlüssel entfernen</button></p><p id="garminSyncStatus" class="sub" role="status" aria-live="polite"></p></div><div class="card"><b>Manueller Garmin-Import (optional)</b><p class="sub">Dein privater GitHub-Workflow lädt Aktivitäten bereits ab. Lade in GitHub Actions das Artefakt „garmin-aktivitaeten“ herunter, entpacke es und wähle hier die Datei <code>garmin_activities.json</code> aus. Die Datei wird nur in diesem Browser verarbeitet, nicht an GitHub Pages übertragen.</p><label for="garminFile">Garmin-Aktivitäten importieren</label><input id="garminFile" type="file" accept=".json,application/json"><p id="garminNotice" class="sub"></p><button id="garminExport" type="button">Importierte Aktivitäten als JSON sichern</button></div><div class="card"><b>Zuordnung zum Trainingsplan</b><p class="sub">Die App schlägt passende offene Einheiten anhand von Sportart und Datum (± 1 Tag) vor. Du bestätigst jede Zuordnung selbst. Bereits abgehakte Einheiten werden nicht überschrieben. Bei mehreren Trainingseinheiten am selben Tag wird die passende Einheit einzeln ausgewählt.</p><div id="garminSummary" class="sub"></div></div><div id="garminActivities"></div><p class="sub">Der automatische Abruf setzt einen geschützten Lese-Endpunkt mit CORS in deinem Cloudflare Worker voraus. Dein Garmin-API-Schlüssel bleibt ausschließlich im privaten GitHub-Repository. Bitte niemals Zugangsdaten oder private Aktivitäten in dein öffentliches App-Repository hochladen.</p></section><section id="progress" class="hidden"><h2>Deine Übersicht</h2><div id="progressText"></div><div class="card"><h2>Erledigte Einheiten nach Sportart</h2><div id="sportProgress"></div></div><p class="sub">Die Auswertung basiert auf den Einträgen in dieser mobilen App, nicht auf einem Live-Strava-Abgleich.</p></section><section id="statistics" class="hidden"><h2>📊 Trainingsstatistik</h2><p class="sub">Auswertung deiner tatsächlich aufgezeichneten Garmin-Aktivitäten. Fortschritte sind nur bei vergleichbaren Einheiten aussagekräftig.</p><div class="card"><div class="toolbar"><div><label for="statYear">Jahr</label><select id="statYear"></select></div><div><label for="statMonth">Ansicht</label><select id="statMonth"><option value="all">Jahresübersicht</option></select></div></div><p id="statNote" class="sub"></p></div><div id="statContent"></div></section><section id="settings" class="hidden"><h2>Trainingsdaten</h2><div class="card"><b>Plan aktualisieren</b><p class="sub">Importiere die training_plan.csv oder training_log.csv aus deiner Mac-App. Bereits abgehakte Einheiten auf diesem iPhone bleiben erhalten.</p><input type="file" id="importCsv" accept=".csv,text/csv"><div id="notice"></div></div><div class="card"><b>Mobile Einträge sichern</b><p class="sub">Exportiere deine abgehakten Einheiten als CSV. Du kannst sie später auf dem Mac weiterverarbeiten.</p><button class="primary" id="export">Einträge exportieren</button></div><div class="card"><b>FTP & Radbereiche</b><p class="sub">Persönliche FTP zur Orientierung. Wattwerte im importierten Trainingsplan bleiben unverändert.</p><label for="ftp">FTP (Watt)</label><input id="ftp" type="number" min="50" max="600" step="1" value="200"><div id="zones" class="sub"></div></div><div class="card"><b>Trainingsplan sichern</b><p class="sub">Exportiert den aktuellen Plan inklusive verschobener Einheiten als CSV.</p><button id="exportPlan">Plan als CSV exportieren</button></div><div class="card"><b>📦 Vollständiges Backup</b><p class="sub">Sichert Wettkämpfe, Häkchen, Verschiebungen, FTP und eigene Trainingspläne. Vor Updates oder Neuinstallation sichern.</p><button class="primary" id="backupAll">Backup herunterladen (.json)</button><label for="restoreAll">Backup wiederherstellen (.json)</label><input id="restoreAll" type="file" accept=".json,application/json"><p id="backupStatus" class="sub"></p></div><div class="card"><b>Strava</b><p class="sub">Deine bestehende Strava-Synchronisierung bleibt vorerst auf dem Mac. Diese mobile Version verwendet keine Strava-Zugangsdaten und führt noch keinen automatischen Strava-Import durch.</p></div><div class="card"><b>Installation auf dem iPhone</b><p class="sub">Nach Veröffentlichung über HTTPS: In Safari öffnen → Teilen → „Zum Home-Bildschirm“. Die App speichert deine Häkchen lokal auf diesem Gerät. Für eine geräteübergreifende Synchronisierung ist ein Backend erforderlich.</p></div></section></main></div><script>
+const $=x=>document.getElementById(x), KEY='triathlon_mobile_records_v1';let plan=[],done=JSON.parse(localStorage.getItem(KEY)||'{}');function parseCSV(s){s=s.replace(/^\uFEFF/,'');let rows=[],r=[],v='',q=false;for(let i=0;i<s.length;i++){let c=s[i];if(c==='"'){if(q&&s[i+1]==='"'){v+='"';i++}else q=!q}else if(c===','&&!q){r.push(v);v=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&s[i+1]==='\n')i++;r.push(v);if(r.some(x=>x!==''))rows.push(r);r=[];v=''}else v+=c}if(v||r.length){r.push(v);rows.push(r)}let cols=rows.shift();return rows.map(a=>Object.fromEntries(cols.map((c,i)=>[c,a[i]||''])))}function save(){localStorage.setItem(KEY,JSON.stringify(done))}function monday(d){let x=new Date(d+'T12:00:00'),n=x.getDay();x.setDate(x.getDate()-((n+6)%7));return x.toISOString().slice(0,10)}function fmt(d){return new Date(d+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})}function emoji(s){return {Swim:'🏊',Bike:'🚴',Run:'🏃',Strength:'🏋️',Rest:'🌿',Race:'🏁'}[s]||'🏅'}function render(){if(!plan.length)return;let w=monday($('weekDate').value),end=new Date(w+'T12:00:00');end.setDate(end.getDate()+6);$('weekTitle').textContent=fmt(w)+' – '+fmt(end.toISOString().slice(0,10));let items=plan.filter(x=>x.Date>=w&&x.Date<=end.toISOString().slice(0,10));$('sessions').innerHTML=items.map(x=>{let checked=!!done[x.WorkoutID],status=checked?'Erledigt':'Geplant';return `<article class="card ${checked?'done':''}"><div class="row"><div><span class="date">${fmt(x.Date)}</span><h2>${emoji(x.Sport)} ${esc(x.Session)}</h2></div><span class="pill">${status}</span></div><div><span class="tag">${esc(x.Sport)}</span><span class="tag">${esc(x.Duration_min)} min</span>${Number(x.Distance_km)>0?`<span class="tag">${esc(x.Distance_km)} km</span>`:''}</div><p class="sub">${esc(x.Target)}</p>${advice?`<div class="card" style="background:#5d2948;border-color:#ff8ec7"><b>${esc(advice.label)}</b><p class="sub">${esc(advice.text)}</p><small>Originaleinheit bleibt erhalten; Empfehlungen gelten für noch offene Einheiten.</small></div>`:``}<details><summary>Einheit ansehen</summary><p class="note">${esc(x.PlannedNotes)}</p></details><p><button class="${checked?'':'primary'}" data-id="${esc(x.WorkoutID)}">${checked?'✓ Als offen markieren':'✓ Als erledigt markieren'}</button></p></article>`}).join('')+''||'<p>Keine Einheiten in dieser Woche.</p>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{let id=b.dataset.id;done[id]?delete done[id]:done[id]={completedAt:new Date().toISOString()};save();render()});let c=plan.filter(x=>done[x.WorkoutID]);$('total').textContent=plan.length;$('completed').textContent=c.length;$('hours').textContent=Math.round(plan.reduce((a,x)=>a+(Number(x.Duration_min)||0),0)/60);$('range').textContent=`${fmt(plan[0].Date)} bis ${fmt(plan[plan.length-1].Date)}`;$('progressText').innerHTML=`<div class="card"><b>${c.length} von ${plan.length} Einheiten erledigt</b><p class="sub">${Math.round(c.reduce((a,x)=>a+(Number(x.Duration_min)||0),0)/60)} geplante Stunden als erledigt markiert</p></div>`;$('sportProgress').innerHTML=[...new Set(plan.map(x=>x.Sport))].map(s=>`<p>${emoji(s)} ${esc(s)}: ${c.filter(x=>x.Sport===s).length} / ${plan.filter(x=>x.Sport===s).length}</p>`).join('')};function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function load(s){let p=parseCSV(s).filter(x=>x.WorkoutID&&x.Date);if(!p.length)throw Error('Keine gültigen Trainingseinträge gefunden');p.sort((a,b)=>a.Date.localeCompare(b.Date));plan=p;localStorage.setItem('triathlon_mobile_plan_v1',s);render()}document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(z=>z.classList.toggle('active',z===b));['week','archive','races','garmin','progress','statistics','settings'].forEach(t=>$(t).classList.toggle('hidden',t!==b.dataset.tab));render()});$('weekDate').value=new Date().toISOString().slice(0,10);$('weekDate').onchange=render;$('today').onclick=()=>{$('weekDate').value=new Date().toISOString().slice(0,10);render()};$('importCsv').onchange=async e=>{try{let imported=await e.target.files[0].text();load(imported);localStorage.setItem('triathlon_mobile_custom_plan_v9',imported);$('notice').textContent='Eigener Trainingsplan erfolgreich geladen.'}catch(err){$('notice').textContent=err.message}};$('export').onclick=()=>{let lines=['WorkoutID,CompletedAt',...Object.entries(done).map(([id,v])=>`"${id.replace(/"/g,'""')}","${v.completedAt}"`)];let a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='triathlon_mobile_erledigt.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};let cached=localStorage.getItem('triathlon_mobile_custom_plan_v9');(cached?Promise.resolve(cached):fetch('training_plan.csv?v=9.2.1').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.text()})).then(load).catch(e=>{$('sessions').textContent='Plan konnte nicht geladen werden: '+e.message});if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+const MOVE_KEY='triathlon_mobile_moves_v5', FTP_KEY='triathlon_mobile_ftp_v5';
+let moves={};try{moves=JSON.parse(localStorage.getItem(MOVE_KEY)||'{}')}catch(e){}
+function shiftedDate(x){return moves[x.WorkoutID]||x.Date}
+function isoLocal(d){const z=d instanceof Date?d:new Date(d+'T12:00:00');return z.getFullYear()+'-'+String(z.getMonth()+1).padStart(2,'0')+'-'+String(z.getDate()).padStart(2,'0')}
+function downloadCsv(filename,rows){let a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\uFEFF'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'}));a.href=u;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+const RACE_KEY='triathlon_mobile_races_v1';
+let races=[];try{races=JSON.parse(localStorage.getItem(RACE_KEY)||'[]');if(!Array.isArray(races))races=[]}catch(e){}
+const raceTypes={"5k":"5-km-Lauf","10k":"10-km-Lauf",hm:"Halbmarathon",marathon:"Marathon",sprint:"Sprinttriathlon",olympic:"Olympische Distanz","703":"Ironman 70.3",other:"Wettkampf"};
+function dateDiff(a,b){return Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/86400000)}
+function raceWindow(r){let pre={A:7,B:4,C:1}[r.priority]||1,post={A:5,B:3,C:1}[r.priority]||1;if(['marathon','703'].includes(r.type)){pre+=2;post+=2}return {pre,post}}
+const RUN_TYPES=['5k','10k','hm','marathon'];
+function trainingFocus(r){
+ const kind=r.type;
+ if(kind==='5k')return {focus:'Kurze Laufintervalle und Laufökonomie',quality:'Kurze, kontrollierte Laufintervalle statt zusätzlicher harter Einheiten',long:'Langen Lauf nicht extra verlängern',specific:'5-km-Renntempo in kurzen Abschnitten üben'};
+ if(kind==='10k')return {focus:'Laufschwelle und 10-km-Tempo',quality:'Eine vorhandene Laufeinheit pro Woche als Tempoblöcke gestalten',long:'Langen Lauf locker beibehalten',specific:'10-km-Renntempo in dosierten Abschnitten üben'};
+ if(kind==='hm')return {focus:'Halbmarathon-Ausdauer und gleichmäßiges Tempo',quality:'Eine bestehende Laufeinheit pro Woche mit moderaten Tempoblöcken',long:'Langen Lauf nur schrittweise ausbauen (maximal ca. 10–15 % je Belastungsblock), nicht zusätzlich zur Gesamtbelastung',specific:'Geplantes Halbmarathontempo in Abschnitten des langen Laufs üben'};
+ if(kind==='marathon')return {focus:'Laufumfang mit besonderem Regenerationsbedarf',quality:'Wenig harte Intervalle; ruhige Dauerläufe priorisieren',long:'Marathon-spezifischer Aufbau braucht längere Vorbereitung und ist nicht automatisch mit 70.3-Plan vereinbar',specific:'Verpflegung und Renntempo im langen Lauf testen'};
+ if(kind==='sprint')return {focus:'Kurze Triathlon-Belastung und Wechsel',quality:'Eine vorhandene intensive Rad- oder Laufeinheit gezielt einsetzen',long:'Grundlageneinheiten für 70.3 weiterführen',specific:'Kurze Koppel-/Wechseleinheit statt zusätzlichem Training'};
+ if(kind==='olympic')return {focus:'Olympische Distanz, Schwimm-Rad-Lauf-Rhythmus',quality:'Eine vorhandene Tempoeinheit rennspezifisch gestalten',long:'Lange Radeinheit für 70.3 beibehalten',specific:'Kontrollierte Koppelbelastung und Wettkampfverpflegung testen'};
+ if(kind==='703')return {focus:'70.3-spezifische Ausdauer und Verpflegung',quality:'Belastung im Wettkampftempo innerhalb vorhandener Einheiten',long:'Lange Radausfahrt und Koppellauf periodisieren, nicht abrupt steigern',specific:'Wettkampfverpflegung, Pacing und Wechsel trainieren'};
+ return {focus:'Vorbereitung im bestehenden Trainingsumfang',quality:'Keine zusätzliche intensive Einheit',long:'Bestehende lange Einheit beibehalten',specific:'Wettkampfspezifische Abläufe üben'};
+}
+function racePhase(r,day){let d=dateDiff(r.date,day);if(d>56)return 'basis';if(d>21)return 'aufbau';if(d>raceWindow(r).pre)return 'spezifisch';if(d>=0)return 'taper';return 'erholung'}
+function raceAdvice(x){const day=shiftedDate(x),candidates=[];
+ for(const r of races){let delta=dateDiff(day,r.date),win=raceWindow(r),focus=trainingFocus(r),daysLeft=-delta,phase=racePhase(r,day),sport=x.Sport,info=[x.Session,x.Target,x.PlannedNotes].join(' '),hard=/intervall|tempo|schwelle|vo2|vo₂|hart|koppel|long|lang|threshold/i.test(info);
+ if(delta===0)candidates.push({score:1000,label:'🏁 Wettkampftag',text:'Statt der geplanten Einheit: '+r.name+'. Keine zusätzliche harte Einheit.',skip:true});
+ else if(delta>0&&delta<=win.post)candidates.push({score:900-delta,label:'🌿 Erholung nach Wettkampf',text:'Regeneration oder 20–40 Minuten locker; bei Ermüdung pausieren.',skip:false});
+ else if(delta<0&&daysLeft<=win.pre){if(daysLeft<=2||hard)candidates.push({score:800-daysLeft,label:'⬇️ Tapering für '+r.name,text:daysLeft<=2?'Ruhe oder 20–35 Minuten locker; keine Intervalle.':'Geplante harte Einheit durch 30–45 Minuten locker ersetzen.',skip:false})}
+ else if(delta<0&&daysLeft<=56&&r.priority!=='C'){
+ let relevant=RUN_TYPES.includes(r.type)?sport==='Run':r.type==='sprint'||r.type==='olympic'||r.type==='703'?['Run','Bike','Swim'].includes(sport):false;
+ if(relevant&&phase==='spezifisch'&&(hard||sport==='Run'&&/lang|long/i.test(info)))candidates.push({score:400-daysLeft,label:'🎯 Wettkampfspezifischer Trainingsreiz',text:focus.specific+'. Bestehende Einheit ersetzen/anpassen, nicht zusätzlich trainieren.',skip:false});
+ else if(relevant&&phase==='aufbau'&&hard)candidates.push({score:300-daysLeft,label:'📈 Gezielter Aufbau',text:focus.quality+'. Nicht mehr harte Einheiten als bisher.',skip:false});
+ }
+ }
+ return candidates.sort((a,b)=>b.score-a.score)[0]||null;
+}
+function raceCard(r){const w=raceWindow(r),f=trainingFocus(r),days=dateDiff(r.date,isoLocal(new Date().toISOString().slice(0,10))),phase=racePhase(r,isoLocal(new Date().toISOString().slice(0,10)));
+ const phaseText={basis:'Grundlagenphase: normalen 70.3-Plan weiterführen.',aufbau:'8–3 Wochen vorher: vorhandene Einheiten wettkampfspezifisch ausrichten.',spezifisch:'Letzte 3 Wochen: spezifische Reize, keine sprunghaften Umfangssteigerungen.',taper:'Tapering: Umfang und Intensität vor dem Rennen reduzieren.',erholung:'Nach dem Wettkampf: Erholung und schrittweiser Wiedereinstieg.'};
+ return `<article class="card"><div class="row"><div><b>🏁 ${esc(r.name)}</b><p class="sub">${fmt(r.date)} · ${esc(raceTypes[r.type]||'Wettkampf')} · Priorität ${esc(r.priority)}</p></div><button data-remove-race="${esc(r.id)}">Löschen</button></div><p><span class="tag">${days>=0?days+' Tage bis zum Start':'Bereits vorbei'}</span><span class="tag">${esc(f.focus)}</span></p><p class="sub"><b>Aktuelle Phase:</b> ${esc(phaseText[phase])}</p><details><summary>Trainingsanpassung ansehen</summary><p class="sub"><b>Schwerpunkt:</b> ${esc(f.focus)}</p><p class="sub"><b>Qualität:</b> ${esc(f.quality)}</p><p class="sub"><b>Lange Einheit:</b> ${esc(f.long)}</p><p class="sub"><b>Wettkampfspezifisch:</b> ${esc(f.specific)}</p><p class="sub"><b>Tapering:</b> ${w.pre} Tage vorher · <b>Erholung:</b> mindestens ${w.post} Tage danach, je nach Belastung.</p><p class="sub">A = höchste Priorität, B = gezielte Vorbereitung, C = Trainingswettkampf. Bestehende Einheiten werden angepasst statt zusätzliche Einheiten anzuhäufen.</p></details></article>`;
+}
+const V9_RACES=[
+ {id:'v9-duisburg-10',name:'Winterlaufserie Duisburg – 10 km',date:'2027-01-23',type:'10k',priority:'C'},
+ {id:'v9-duisburg-15',name:'Winterlaufserie Duisburg – 15 km',date:'2027-02-13',type:'other',priority:'B'},
+ {id:'v9-duisburg-hm',name:'Winterlaufserie Duisburg – Halbmarathon',date:'2027-03-13',type:'hm',priority:'B'},
+ {id:'v9-bonn',name:'Triathlon Bonn – 4,2 km Schwimmen / 60 km Rad / 15 km Laufen',date:'2027-06-06',type:'other',priority:'B'},
+ {id:'v9-koeln-hm',name:'Köln Halbmarathon',date:'2027-10-03',type:'hm',priority:'B'},
+ {id:'v9-porec',name:'IRONMAN 70.3 Poreč',date:'2027-10-17',type:'703',priority:'A'}
+];
+if(!localStorage.getItem('triathlon_v9_seeded_races')){
+ for(const r of V9_RACES)if(!races.some(x=>x.date===r.date))races.push(r);
+ localStorage.setItem(RACE_KEY,JSON.stringify(races));localStorage.setItem('triathlon_v9_seeded_races','1');
+}
+function renderRaces(){$('raceList').innerHTML=races.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(raceCard).join('')||'<p class="sub">Noch keine Vorbereitungswettkämpfe eingetragen.</p>';document.querySelectorAll('[data-remove-race]').forEach(b=>b.onclick=()=>{if(!confirm('Wettkampf wirklich löschen?'))return;races=races.filter(r=>r.id!==b.dataset.removeRace);localStorage.setItem(RACE_KEY,JSON.stringify(races));render()})}
+$('raceForm').onsubmit=e=>{e.preventDefault();let name=$('raceName').value.trim(),date=$('raceDate').value;if(!name||!/^\d{4}-\d{2}-\d{2}$/.test(date))return;races.push({id:'r'+Date.now()+'-'+Math.random().toString(36).slice(2,8),name,date,type:$('raceType').value,priority:$('racePriority').value});localStorage.setItem(RACE_KEY,JSON.stringify(races));$('raceForm').reset();render()};
+const originalRender=render;
+render=function(){
+  if(!plan.length)return;
+  const w=monday($('weekDate').value),end=new Date(w+'T12:00:00');end.setDate(end.getDate()+6);const endStr=isoLocal(end);
+  $('weekTitle').textContent=fmt(w)+' – '+fmt(endStr);
+  const items=plan.filter(x=>shiftedDate(x)>=w&&shiftedDate(x)<=endStr&&!done[x.WorkoutID]).sort((a,b)=>shiftedDate(a).localeCompare(shiftedDate(b)));const raceDays=races.filter(r=>r.date>=w&&r.date<=endStr);
+  $('sessions').innerHTML=items.map(x=>{let checked=!!done[x.WorkoutID],date=shiftedDate(x),advice=raceAdvice(x);return `<article class="card ${date===localDateString(new Date())?'today-highlight':''}"><div class="row"><div><span class="date">${date===localDateString(new Date())?'📍 Heute · ':''}${fmt(date)}${date!==x.Date?' · verschoben':''}</span><h2>${emoji(x.Sport)} ${esc(x.Session)}</h2></div><span class="pill">${checked?'Erledigt':'Geplant'}</span></div><div><span class="tag">${esc(x.Sport)}</span><span class="tag">${esc(x.Duration_min)} min</span>${Number(x.Distance_km)>0?`<span class="tag">${esc(x.Distance_km)} km</span>`:''}</div><p class="sub">${esc(x.Target)}</p>${advice?`<div class="card" style="background:#5d2948;border-color:#ff8ec7"><b>${esc(advice.label)}</b><p class="sub">${esc(advice.text)}</p><small>Originaleinheit bleibt erhalten; Empfehlungen gelten für noch offene Einheiten.</small></div>`:``}<details><summary>Einheit ansehen</summary><p class="note">${esc(x.PlannedNotes)}</p></details><label>Auf anderen Tag verschieben</label><input type="date" class="moveDate" data-move="${esc(x.WorkoutID)}" value="${date}" min="2026-10-01" max="2028-12-31"><p><button class="${checked?'':'primary'}" data-id="${esc(x.WorkoutID)}">${checked?'✓ Als offen markieren':'✓ Als erledigt markieren'}</button></p></article>`}).join('')+raceDays.map(r=>`<article class="card done"><h2>🏁 ${esc(r.name)}</h2><p class="sub">${fmt(r.date)} · ${esc(raceTypes[r.type]||'Wettkampf')} · Priorität ${esc(r.priority)}</p></article>`).join('')||'<p>Keine Einheiten in dieser Woche.</p>';
+  document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{let id=b.dataset.id;done[id]?delete done[id]:done[id]={completedAt:new Date().toISOString()};save();render()});
+  document.querySelectorAll('[data-move]').forEach(el=>el.onchange=()=>{let id=el.dataset.move,original=plan.find(x=>x.WorkoutID===id);if(!original||!/^\d{4}-\d{2}-\d{2}$/.test(el.value))return;if(el.value===original.Date)delete moves[id];else moves[id]=el.value;localStorage.setItem(MOVE_KEY,JSON.stringify(moves));render()});
+  renderRaces();let c=plan.filter(x=>done[x.WorkoutID]);$('total').textContent=plan.length;$('completed').textContent=c.length;$('hours').textContent=Math.round(plan.reduce((a,x)=>a+(Number(x.Duration_min)||0),0)/60);$('range').textContent=`${fmt(plan[0].Date)} bis ${fmt(plan[plan.length-1].Date)}`;$('progressText').innerHTML=`<div class="card"><b>${c.length} von ${plan.length} Einheiten erledigt</b><p class="sub">${Math.round(c.reduce((a,x)=>a+(Number(x.Duration_min)||0),0)/60)} geplante Stunden als erledigt markiert</p></div>`;$('sportProgress').innerHTML=[...new Set(plan.map(x=>x.Sport))].map(s=>`<p>${emoji(s)} ${esc(s)}: ${c.filter(x=>x.Sport===s).length} / ${plan.filter(x=>x.Sport===s).length}</p>`).join('');
+};
+// Wochenarchiv: vergangene Kalenderwochen, inklusive offener Einheiten.
+function localDateString(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function currentWeekStart(){return monday(localDateString(new Date()))}
+function renderArchive(){
+  if(!plan.length)return;
+  const cutoff=currentWeekStart(),groups=new Map();
+  for(const x of plan){
+    const date=shiftedDate(x),week=monday(date);
+    if(week>=cutoff&&!done[x.WorkoutID])continue;
+    if(!groups.has(week))groups.set(week,[]);
+    groups.get(week).push(x);
+  }
+  for(const r of races){
+    const week=monday(r.date);
+    if(week<cutoff&&!groups.has(week))groups.set(week,[]);
+  }
+  const keys=[...groups.keys()].sort().reverse();
+  $('archiveWeeks').innerHTML=keys.map(week=>{
+    const items=groups.get(week).sort((a,b)=>shiftedDate(a).localeCompare(shiftedDate(b)));
+    const end=new Date(week+'T12:00:00');end.setDate(end.getDate()+6);
+    const count=items.filter(x=>!!done[x.WorkoutID]).length;
+    const weekRaces=races.filter(r=>monday(r.date)===week);
+    return `<details class="card archive-week"><summary><b>${fmt(week)} – ${fmt(localDateString(end))}</b><br><span class="sub">${count} von ${items.length} Einheiten erledigt${weekRaces.length?' · '+weekRaces.length+' Wettkampf/Wettkämpfe':''}</span></summary>
+      ${items.map(x=>`<article style="border-top:1px solid #72415d;margin-top:12px;padding-top:12px">
+      <div class="row"><b>${emoji(x.Sport)} ${esc(x.Session)}</b><span class="pill">${done[x.WorkoutID]?'✓ Erledigt':'Offen'}</span></div>
+      <p class="sub">${fmt(shiftedDate(x))} · ${esc(x.Duration_min)} min${Number(x.Distance_km)>0?' · '+esc(x.Distance_km)+' km':''}</p>
+      <p class="sub">${esc(x.Target)}</p>${garminArchiveInfo(x.WorkoutID)}<details><summary>Einheit ansehen</summary><p class="note">${esc(x.PlannedNotes)}</p></details>
+      <button data-archive-id="${esc(x.WorkoutID)}" style="margin-top:8px">${done[x.WorkoutID]?'Als offen markieren':'Als erledigt markieren'}</button>
+      </article>`).join('')}
+      ${weekRaces.map(r=>`<p>🏁 ${esc(r.name)} · ${fmt(r.date)}</p>`).join('')}
+      </details>`;
+  }).join('')||'<div class="card">Noch keine vergangenen Trainingswochen vorhanden.</div>';
+  document.querySelectorAll('[data-archive-id]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.archiveId;
+    if(done[id])delete done[id];else done[id]={completedAt:new Date().toISOString()};
+    save();
+    const opened=[...document.querySelectorAll('.archive-week')].map((el,i)=>el.open?i:-1).filter(i=>i>=0);
+    render();
+    document.querySelectorAll('.archive-week').forEach((el,i)=>{if(opened.includes(i))el.open=true});
+  });
+}
+const previousRenderWithRaces=render;
+render=function(){
+  const cutoff=currentWeekStart();
+  if(!$('weekDate').value)$('weekDate').value=cutoff;
+  previousRenderWithRaces();
+  renderArchive();
+};
+$('prevWeek').onclick=()=>{let d=new Date(monday($('weekDate').value)+'T12:00:00');d.setDate(d.getDate()-7);$('weekDate').value=localDateString(d);render()};
+$('nextWeek').onclick=()=>{let d=new Date(monday($('weekDate').value)+'T12:00:00');d.setDate(d.getDate()+7);$('weekDate').value=localDateString(d);render()};
+$('backupAll').onclick=()=>{
+ const payload={format:'triathlon-v9-backup',version:1,created:new Date().toISOString(),completed:done,moves,races,ftp:localStorage.getItem(FTP_KEY)||'200',customPlan:localStorage.getItem('triathlon_mobile_custom_plan_v9')||null,garminActivities:garminActivities,garminLinks:garminLinks};
+ const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));a.href=url;a.download='triathlon_backup_'+localDateString(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$('restoreAll').onchange=async e=>{
+ try{
+  const f=e.target.files[0];if(!f)return;
+  const data=JSON.parse((await f.text()).replace(/^\uFEFF/,''));
+  if(data.format!=='triathlon-v9-backup'||!data.completed||!Array.isArray(data.races)||!data.moves)throw Error('Ungültiges V9-Backup');
+  if(!confirm('Gespeicherte Häkchen, Wettkämpfe und Verschiebungen durch dieses Backup ersetzen?'))return;
+  done=data.completed;moves=data.moves;races=data.races; if(Array.isArray(data.garminActivities)){garminActivities=data.garminActivities;localStorage.setItem(GARMIN_KEY,JSON.stringify(garminActivities))}if(data.garminLinks&&typeof data.garminLinks==='object'){garminLinks=data.garminLinks;localStorage.setItem(GARMIN_LINKS,JSON.stringify(garminLinks))}
+  save();localStorage.setItem(MOVE_KEY,JSON.stringify(moves));localStorage.setItem(RACE_KEY,JSON.stringify(races));localStorage.setItem('triathlon_v9_seeded_races','1');
+  if(data.ftp)localStorage.setItem(FTP_KEY,String(data.ftp));
+  if(data.customPlan){localStorage.setItem('triathlon_mobile_custom_plan_v9',data.customPlan);load(data.customPlan)}
+  else{localStorage.removeItem('triathlon_mobile_custom_plan_v9');fetch('training_plan.csv?v=9.2.1').then(r=>r.text()).then(load)}
+  $('ftp').value=localStorage.getItem(FTP_KEY)||'200';showZones();$('backupStatus').textContent='Backup wiederhergestellt.';render();renderGarmin();
+ }catch(err){$('backupStatus').textContent='Fehler: '+err.message}
+};
+const ftpInput=$('ftp');ftpInput.value=localStorage.getItem(FTP_KEY)||'200';function showZones(){let ftp=Number(ftpInput.value)||200;$('zones').innerHTML=`<p>Regeneration: &lt; ${Math.round(ftp*.55)} W · GA1: ${Math.round(ftp*.56)}–${Math.round(ftp*.75)} W · Tempo: ${Math.round(ftp*.76)}–${Math.round(ftp*.9)} W · Schwelle: ${Math.round(ftp*.91)}–${Math.round(ftp*1.05)} W · VO₂max: ${Math.round(ftp*1.06)}–${Math.round(ftp*1.2)} W</p>`}ftpInput.onchange=()=>{let v=Math.min(600,Math.max(50,Number(ftpInput.value)||200));ftpInput.value=v;localStorage.setItem(FTP_KEY,String(v));showZones()};showZones();
+$('exportPlan').onclick=()=>{if(!plan.length)return;const cols=Object.keys(plan[0]);downloadCsv('triathlon_v5_plan_aktuell.csv',[cols.map(csvCell).join(','),...plan.map(x=>cols.map(c=>csvCell(c==='Date'?shiftedDate(x):x[c])).join(','))])};
+render();
+
+// V10: local-only Garmin activity import. No Garmin credentials or GitHub tokens in client.
+const GARMIN_KEY='triathlon_garmin_activities_v10',GARMIN_LINKS='triathlon_garmin_links_v10';
+let garminActivities=[],garminLinks={};
+try{garminActivities=JSON.parse(localStorage.getItem(GARMIN_KEY)||'[]');if(!Array.isArray(garminActivities))garminActivities=[]}catch(e){}
+try{garminLinks=JSON.parse(localStorage.getItem(GARMIN_LINKS)||'{}')}catch(e){}
+function garminSport(a){
+ const t=String(a.activityType?.typeKey||a.activityType?.typeId||a.activityName||'').toLowerCase();
+ if(/swim|schwimm|pool|open_water/.test(t))return 'Swim';
+ if(/cycl|bik|rad|velo|virtual_ride/.test(t))return 'Bike';
+ if(/run|lauf|treadmill|trail/.test(t))return 'Run';
+ if(/strength|kraft|weight|functional/.test(t))return 'Strength';
+ return 'Other';
+}
+function garminDay(a){return String(a.startTimeLocal||a.startTimeGMT||'').slice(0,10)}
+function garminMinutes(a){return Number(a.duration||0)/60}
+function garminKm(a){return Number(a.distance||0)/1000}
+function garminCandidate(a){
+ const day=garminDay(a),sport=garminSport(a);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||sport==='Other')return [];
+ return plan.filter(x=>x.Sport===sport&&!done[x.WorkoutID]&&Math.abs(dateDiff(shiftedDate(x),day))<=1)
+ .sort((x,y)=>Math.abs(dateDiff(shiftedDate(x),day))-Math.abs(dateDiff(shiftedDate(y),day)));
+}
+// V10.2: kompakte Ist-Werte, ausschließlich aus importierten Garmin-Daten.
+function garminNumber(a,keys){for(const k of keys){const v=a[k];if(v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))&&Number(v)>0)return Number(v)}return null}
+function garminDuration(a){return garminNumber(a,['movingDuration','duration','elapsedDuration'])}
+function garminTime(seconds){if(!seconds)return null;const n=Math.round(seconds),h=Math.floor(n/3600),m=Math.floor(n%3600/60),sec=n%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`}
+function garminPace(seconds,distMeters,unitMeters){if(!seconds||!distMeters)return null;const pace=seconds*unitMeters/distMeters;if(!Number.isFinite(pace)||pace<=0)return null;const whole=Math.round(pace);return `${Math.floor(whole/60)}:${String(whole%60).padStart(2,'0')}`}
+function garminMetrics(a){
+ if(!a)return '';
+ const sport=garminSport(a),dist=garminNumber(a,['distance']),duration=garminDuration(a),avgHr=garminNumber(a,['averageHR','averageHeartRate']),maxHr=garminNumber(a,['maxHR','maxHeartRate']);
+ const metrics=[];const add=(label,val)=>{if(val!==null&&val!==undefined&&val!=='')metrics.push(`<span class="tag"><b>${esc(label)}:</b> ${esc(val)}</span>`)};
+ if(dist)add('Distanz',sport==='Swim'?`${Math.round(dist)} m`:`${(dist/1000).toFixed(2).replace('.',',')} km`);
+ if(duration)add('Dauer',garminTime(duration));
+ if(sport==='Run'||sport==='Swim'){
+   const unit=sport==='Swim'?100:1000;
+   const pace=garminPace(duration,dist,unit);
+   if(pace)add('Ø Pace',`${pace} min/${sport==='Swim'?'100 m':'km'}`);
+ }else if(sport==='Bike'){
+   const speed=garminNumber(a,['averageSpeed']);
+   if(speed)add('Ø Tempo',`${(speed*3.6).toFixed(1).replace('.',',')} km/h`);
+   else if(dist&&duration)add('Ø Tempo',`${(dist/duration*3.6).toFixed(1).replace('.',',')} km/h`);
+   const watts=garminNumber(a,['avgPower','averagePower','averageWatts']);if(watts)add('Ø Leistung',`${Math.round(watts)} W`);
+   const np=garminNumber(a,['normPower','normalizedPower']);if(np)add('NP',`${Math.round(np)} W`);
+ }
+ if(avgHr)add('Ø Puls',`${Math.round(avgHr)} bpm`);
+ if(maxHr)add('Max. Puls',`${Math.round(maxHr)} bpm`);
+ if(sport==='Swim'){const swolf=garminNumber(a,['averageSwolf','avgSwolf']);if(swolf)add('SWOLF',Math.round(swolf))}
+ return metrics.length?`<div class="garmin-metrics">${metrics.join('')}</div>`:'<p class="sub">Keine auswertbaren Garmin-Messwerte vorhanden.</p>';
+}
+function garminForWorkout(workoutId){
+ const linked=Object.entries(garminLinks).find(([activityId,id])=>id===workoutId);
+ const activityId=linked?.[0]||done[workoutId]?.garminActivityId;
+ return activityId?garminActivities.find(a=>String(a.activityId)===String(activityId)):null;
+}
+function garminArchiveInfo(workoutId){
+ const activity=garminForWorkout(workoutId);
+ if(!activity)return done[workoutId]?.source==='Garmin'?'<p class="sub">⌚ Garmin-Zuordnung vorhanden, Aktivitätsdaten derzeit nicht gespeichert.</p>':'';
+ return `<div class="garmin-archive"><b>⌚ Tatsächlich absolviert (Garmin)</b>${garminMetrics(activity)}</div>`;
+}
+function renderGarmin(){
+ const entries=garminActivities.slice().sort((a,b)=>String(b.startTimeLocal||'').localeCompare(String(a.startTimeLocal||'')));
+ $('garminSummary').textContent=`${entries.length} Aktivitäten lokal gespeichert · ${Object.keys(garminLinks).length} bestätigt zugeordnet.`;
+ $('garminActivities').innerHTML=entries.map(a=>{
+  const id=String(a.activityId||''),sport=garminSport(a),date=garminDay(a),link=garminLinks[id];
+  const candidates=garminCandidate(a),disabled=!!link;
+  return `<article class="card"><div class="row"><b>${emoji(sport)} ${esc(a.activityName||sport)}</b><span class="pill">${esc(date)}</span></div>
+  ${garminMetrics(a)}
+  ${link?`<p>✓ Zugeordnet: ${esc(plan.find(x=>x.WorkoutID===link)?.Session||link)}</p><button data-unlink-garmin="${esc(id)}">Zuordnung lösen</button>`:
+  `<label>Geplante Einheit zuordnen</label><select data-garmin-choice="${esc(id)}"><option value="">Nicht zuordnen</option>${candidates.map(x=>`<option value="${esc(x.WorkoutID)}">${esc(shiftedDate(x))} · ${esc(x.Session)}</option>`).join('')}</select><button class="primary" data-link-garmin="${esc(id)}" ${!candidates.length?'disabled':''}>Zuordnung bestätigen & abhaken</button>${!candidates.length?'<p class="sub">Keine passende offene Einheit im Zeitraum ± 1 Tag.</p>':''}`}</article>`;
+ }).join('')||'<div class="card">Noch keine Garmin-Aktivitäten importiert.</div>';
+ document.querySelectorAll('[data-link-garmin]').forEach(b=>b.onclick=()=>{
+  const id=b.dataset.linkGarmin,select=[...document.querySelectorAll('[data-garmin-choice]')].find(x=>x.dataset.garminChoice===id);
+  const workout=select?.value;if(!workout||done[workout])return;
+  if(!confirm('Diese Garmin-Aktivität mit der gewählten Trainingseinheit verknüpfen und abhaken?'))return;
+  garminLinks[id]=workout;done[workout]={completedAt:new Date().toISOString(),source:'Garmin',garminActivityId:id};
+  localStorage.setItem(GARMIN_LINKS,JSON.stringify(garminLinks));save();render();renderGarmin();
+ });
+ document.querySelectorAll('[data-unlink-garmin]').forEach(b=>b.onclick=()=>{
+  const id=b.dataset.unlinkGarmin,workout=garminLinks[id];
+  if(!confirm('Zuordnung lösen? Die Trainingseinheit bleibt zunächst abgehakt.'))return;
+  delete garminLinks[id];localStorage.setItem(GARMIN_LINKS,JSON.stringify(garminLinks));renderGarmin();renderArchive();
+ });
+}
+$('garminFile').onchange=async e=>{
+ try{
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>20*1024*1024)throw Error('Datei zu groß (max. 20 MB).');
+  const data=JSON.parse((await f.text()).replace(/^\uFEFF/,''));
+  if(!Array.isArray(data.activities))throw Error('Erwartet: garmin_activities.json mit activities-Liste.');
+  const map=new Map(garminActivities.map(a=>[String(a.activityId),a]));let added=0;
+  for(const a of data.activities){if(!a||a.activityId==null)continue;const id=String(a.activityId);if(!map.has(id))added++;map.set(id,a)}
+  garminActivities=[...map.values()];
+  try{localStorage.setItem(GARMIN_KEY,JSON.stringify(garminActivities))}catch(e){throw Error('Browser-Speicher voll. Bitte weniger Aktivitäten importieren.')}
+  $('garminNotice').textContent=`Import erfolgreich: ${added} neue Aktivitäten, insgesamt ${garminActivities.length}.`;
+  renderGarmin();renderStatistics();
+ }catch(err){$('garminNotice').textContent='Importfehler: '+err.message}
+};
+$('garminExport').onclick=()=>{
+ const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify({activities:garminActivities},null,2)],{type:'application/json'}));
+ a.href=url;a.download='garmin_aktivitaeten_backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+};
+renderGarmin();
+
+// V10.3: Cloud-Sync. Kein Zugangsschlüssel im öffentlichen HTML.
+const GARMIN_SYNC_URL_KEY='triathlon_garmin_read_url_v103',GARMIN_SYNC_TOKEN_KEY='triathlon_garmin_read_token_v103';
+const garminUrlInput=$('garminEndpoint'),garminTokenInput=$('garminReadToken');
+garminUrlInput.value=localStorage.getItem(GARMIN_SYNC_URL_KEY)||'https://triathlon-garmin-sync.p-hetfeld.workers.dev/activities';
+garminTokenInput.value=localStorage.getItem(GARMIN_SYNC_TOKEN_KEY)||'';
+let garminSyncBusy=false;
+async function syncGarminCloud(automatic=false){
+ if(garminSyncBusy)return;
+ const url=garminUrlInput.value.trim(),token=garminTokenInput.value.trim();
+ if(!url||!token){if(!automatic)$('garminSyncStatus').textContent='Bitte Abrufadresse und privaten Leseschlüssel eingeben.';return}
+ let parsed;try{parsed=new URL(url);if(parsed.protocol!=='https:'||parsed.username||parsed.password)throw Error()}catch(e){$('garminSyncStatus').textContent='Bitte eine gültige HTTPS-Adresse ohne Zugangsdaten eingeben.';return}
+ garminSyncBusy=true;$('garminSync').disabled=true;$('garminSyncStatus').textContent='Aktivitäten werden abgerufen …';
+ try{
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),18000);let response;
+  try{response=await fetch(parsed.href,{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store',signal:ctrl.signal})}finally{clearTimeout(timer)}
+  if(!response.ok)throw Error([401,403].includes(response.status)?'Zugriff verweigert. Leseschlüssel oder Worker prüfen.':'HTTP '+response.status);
+  const body=await response.text();if(body.length>20*1024*1024)throw Error('Antwort zu groß.');
+  const data=JSON.parse(body),activities=Array.isArray(data)?data:data.activities;
+  if(!Array.isArray(activities))throw Error('Antwort enthält keine activities-Liste.');
+  const map=new Map(garminActivities.map(a=>[String(a.activityId),a]));let added=0;
+  for(const a of activities){if(!a||a.activityId==null)continue;const id=String(a.activityId);if(!map.has(id))added++;map.set(id,a)}
+  const updated=[...map.values()];localStorage.setItem(GARMIN_KEY,JSON.stringify(updated));
+  localStorage.setItem(GARMIN_SYNC_URL_KEY,parsed.href);localStorage.setItem(GARMIN_SYNC_TOKEN_KEY,token);
+  garminActivities=updated;renderGarmin();renderArchive();renderStatistics();
+  renderStatistics();$('garminSyncStatus').textContent='✓ Synchronisiert: '+added+' neue Aktivitäten, '+updated.length+' insgesamt. '+new Date().toLocaleString('de-DE');
+ }catch(e){$('garminSyncStatus').textContent='Abruf fehlgeschlagen: '+(e.name==='AbortError'?'Zeitüberschreitung.':e instanceof TypeError?'Netzwerk-/CORS-Fehler. Cloudflare muss diese App zulassen.':e.message)}
+ finally{garminSyncBusy=false;$('garminSync').disabled=false}
+}
+$('garminSync').onclick=()=>syncGarminCloud();
+$('garminForget').onclick=()=>{localStorage.removeItem(GARMIN_SYNC_TOKEN_KEY);garminTokenInput.value='';$('garminSyncStatus').textContent='Leseschlüssel entfernt. Aktivitäten bleiben gespeichert.'};
+if(garminTokenInput.value)syncGarminCloud(true);
+
+// V10.4: Statistik nur aus Garmin-Istwerten. Bestehende Daten bleiben unverändert.
+const STAT_SPORTS=[['Swim','🏊 Schwimmen'],['Bike','🚴 Radfahren'],['Run','🏃 Laufen'],['Strength','💪 Krafttraining'],['Other','✨ Sonstiges']];
+const STAT_MONTHS=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const statFormat=(n,d=1)=>Number(n||0).toLocaleString('de-DE',{maximumFractionDigits:d,minimumFractionDigits:d});
+function statActivities(){
+ return garminActivities.filter(a=>/^\d{4}-\d{2}-\d{2}$/.test(garminDay(a)));
+}
+function statAgg(arr){
+ let seconds=0,meters=0,powerSeconds=0,powerWeighted=0,hrSeconds=0,hrWeighted=0;
+ for(const a of arr){const dur=garminDuration(a)||0,dist=garminNumber(a,['distance'])||0;
+  seconds+=dur;meters+=dist;
+  const pw=garminNumber(a,['avgPower','averagePower','averageWatts']);if(pw&&dur){powerSeconds+=dur;powerWeighted+=pw*dur}
+  const hr=garminNumber(a,['averageHR','averageHeartRate']);if(hr&&dur){hrSeconds+=dur;hrWeighted+=hr*dur}
+ }
+ return {count:arr.length,seconds,meters,power:powerSeconds?powerWeighted/powerSeconds:null,hr:hrSeconds?hrWeighted/hrSeconds:null};
+}
+function statMetric(sport,a){
+ if(sport==='Swim'||sport==='Run')return a.meters&&a.seconds?{label:sport==='Swim'?'Ø Tempo / 100 m':'Ø Tempo / km',value:garminPace(a.seconds,a.meters,sport==='Swim'?100:1000),secondsPerUnit:a.seconds*(sport==='Swim'?100:1000)/a.meters}:null;
+ if(sport==='Bike')return a.power?{label:'Ø Leistung',value:statFormat(a.power,0)+' W',numeric:a.power,up:true}:a.meters&&a.seconds?{label:'Ø Geschwindigkeit',value:statFormat(a.meters/a.seconds*3.6)+' km/h',numeric:a.meters/a.seconds*3.6,up:true}:null;
+ return null;
+}
+function statChange(now,prev,kind){if(!prev||!now)return '–';const delta=(now/prev-1)*100;return (delta>0?'+':'')+statFormat(delta,0)+' %';}
+function statSportCard(sport,label,arr,prevArr,comparison){
+ const a=statAgg(arr),b=statAgg(prevArr),m=statMetric(sport,a),pm=statMetric(sport,b);
+ let detail='';
+ if(comparison&&b.count){detail=`<p class="stat-muted">Gegenüber Vormonat: Distanz ${statChange(a.meters,b.meters)} · Zeit ${statChange(a.seconds,b.seconds)}</p>`;
+  if(m&&pm){const now=m.secondsPerUnit??m.numeric,old=pm.secondsPerUnit??pm.numeric;
+   if(now&&old){const improved=m.secondsPerUnit?now<old:now>old;const delta=Math.abs((now/old-1)*100);
+    detail+=`<p class="${improved?'stat-positive':'stat-negative'}">${esc(m.label)}: ${improved?'↗ rechnerisch schneller/höher':'↘ rechnerisch langsamer/niedriger'} (${statFormat(delta,1)} %). Nur eingeschränkt vergleichbar.</p>`;
+   }
+  }
+ }
+ return `<article class="card stat-sport"><h3>${label}</h3><div class="stat-grid"><div class="stat-tile"><span class="stat-muted">Einheiten</span><strong>${a.count}</strong></div><div class="stat-tile"><span class="stat-muted">Trainingszeit</span><strong>${statFormat(a.seconds/3600)} h</strong></div><div class="stat-tile"><span class="stat-muted">Distanz</span><strong>${statFormat(a.meters/1000)} km</strong></div><div class="stat-tile"><span class="stat-muted">${m?esc(m.label):'Ø Herzfrequenz'}</span><strong>${m?esc(m.value):a.hr?statFormat(a.hr,0)+' bpm':'–'}</strong></div></div>${detail}</article>`;
+}
+function renderStatistics(){
+ const ySel=$('statYear'),mSel=$('statMonth'),container=$('statContent');if(!ySel||!mSel||!container)return;
+ const activities=statActivities(),years=[...new Set(activities.map(a=>garminDay(a).slice(0,4)))].sort().reverse();
+ if(!years.length){ySel.innerHTML='<option>–</option>';mSel.innerHTML='<option value="all">Jahresübersicht</option>';container.innerHTML='<div class="card">Noch keine Garmin-Aktivitäten vorhanden. Nach der nächsten Synchronisierung erscheinen hier deine Monats- und Jahresstatistiken.</div>';return}
+ const selectedYear=years.includes(ySel.value)?ySel.value:years[0],selectedMonth=mSel.value||'all';
+ ySel.innerHTML=years.map(y=>`<option value="${y}" ${y===selectedYear?'selected':''}>${y}</option>`).join('');
+ mSel.innerHTML='<option value="all">Jahresübersicht</option>'+STAT_MONTHS.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('');
+ mSel.value=selectedMonth;
+ const yearActs=activities.filter(a=>garminDay(a).startsWith(selectedYear+'-'));
+ $('statNote').textContent=`${yearActs.length} Garmin-Aktivitäten in ${selectedYear} · Datenstand: ${new Date().toLocaleDateString('de-DE')}`;
+ if(selectedMonth!=='all'){
+  const prefix=selectedYear+'-'+selectedMonth,prevDate=new Date(Number(selectedYear),Number(selectedMonth)-2,1),prevPrefix=prevDate.getFullYear()+'-'+String(prevDate.getMonth()+1).padStart(2,'0');
+  const current=activities.filter(a=>garminDay(a).startsWith(prefix)),previous=activities.filter(a=>garminDay(a).startsWith(prevPrefix));
+  const total=statAgg(current);
+  container.innerHTML=`<div class="card"><h3>${STAT_MONTHS[Number(selectedMonth)-1]} ${selectedYear}</h3><p>${total.count} Aktivitäten · ${statFormat(total.seconds/3600)} Stunden · ${statFormat(total.meters/1000)} km insgesamt</p><p class="sub">Vergleich mit ${STAT_MONTHS[prevDate.getMonth()]} ${prevDate.getFullYear()}. Durchschnittstempo ist ein gewichteter Gesamtwert, kein standardisierter Leistungstest.</p></div>`+STAT_SPORTS.filter(([s])=>current.some(a=>garminSport(a)===s)||previous.some(a=>garminSport(a)===s)).map(([s,label])=>statSportCard(s,label,current.filter(a=>garminSport(a)===s),previous.filter(a=>garminSport(a)===s),true)).join('')||'<div class="card">Keine Aktivitäten in diesem Monat.</div>';
+ }else{
+  const total=statAgg(yearActs);
+  container.innerHTML=`<div class="card"><h3>Jahresübersicht ${selectedYear}</h3><div class="stat-grid"><div class="stat-tile">Einheiten<strong>${total.count}</strong></div><div class="stat-tile">Trainingsstunden<strong>${statFormat(total.seconds/3600)} h</strong></div><div class="stat-tile">Distanz<strong>${statFormat(total.meters/1000)} km</strong></div><div class="stat-tile">Aktive Monate<strong>${new Set(yearActs.map(a=>garminDay(a).slice(0,7))).size}</strong></div></div></div>`;
+  for(const [sport,label] of STAT_SPORTS){const subset=yearActs.filter(a=>garminSport(a)===sport);if(!subset.length)continue;
+   const monthly=STAT_MONTHS.map((_,i)=>statAgg(subset.filter(a=>garminDay(a).slice(5,7)===String(i+1).padStart(2,'0'))));
+   const max=Math.max(...monthly.map(x=>x.seconds),1);
+   container.innerHTML+=statSportCard(sport,label,subset,[],false)+`<div class="card"><b>${label} · Trainingszeit je Monat</b><p class="sub">Monatliche Entwicklung der absolvierten Stunden</p>`+monthly.map((v,i)=>`<div class="stat-month-row"><span>${STAT_MONTHS[i]}</span><div class="stat-track"><div class="stat-fill" style="width:${v.seconds/max*100}%"></div></div><span>${statFormat(v.seconds/3600)} h</span></div>`).join('')+'</div>';
+  }
+  container.innerHTML+='<p class="sub">Tipp: Wähle oben einen Monat, um Veränderungen von Distanz, Trainingszeit und – sofern verfügbar – Tempo oder Wattwerten zum Vormonat zu sehen. Unterschiede können durch Streckenprofil, Trainingsintensität und Einheitentyp entstehen.</p>';
+ }
+}
+$('statYear').onchange=renderStatistics;
+$('statMonth').onchange=renderStatistics;
+renderStatistics();
+
+</script></body></html>
