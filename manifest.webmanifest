@@ -1,0 +1,17 @@
+{
+  "name": "Triathlon 70.3 – Rosa",
+  "short_name": "Triathlon",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#24121f",
+  "theme_color": "#35172c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
